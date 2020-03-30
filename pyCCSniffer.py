@@ -43,6 +43,8 @@ import time
 import types
 import usb.core
 import usb.util
+import pandas as pd
+import os
 
 import ieee15dot4 as ieee
 """
@@ -222,6 +224,11 @@ class PacketHandler(object):
                 if capture is not None:
                     self.captures.append(capture)
                     print(capture)
+                    captured = pd.DataFrame(capture)
+                    df = pd.read_csv(output.csv)
+                    data = data.append(captured, ignore_index=True)
+                    data.to_csv('output.csv', sep='\t')
+                    
                     # hack here!
                     sys.stdout.flush()
 
@@ -526,6 +533,8 @@ def log_init():
 if __name__ == '__main__':
     args = arg_parser()
     log_init()
+    title = pd.DataFrame([])
+    title.to_csv('output.csv', sep='\t')
 
     logger.info('Started logging')
     start_datetime = datetime.now()
